@@ -32,5 +32,39 @@ router.post('/reports', async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   });
+
+
+  router.get('/getIssues', async (req, res) => {
+    try {
+        const issues = await Issue.find(); // Retrieve all issues from the database
+        res.json(issues); // Send the issues as JSON response
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server Error' });
+    }
+});
   
+  // Route to accept an issue
+router.put('/accept/:id', async (req, res) => {
+  try {
+      const issue = await Issue.findByIdAndUpdate(req.params.id, { status: 'In Progress' }, { new: true });
+      res.json(issue);
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+// Route to reject an issue
+router.put('/reject/:id', async (req, res) => {
+  try {
+      const issue = await Issue.findByIdAndUpdate(req.params.id, { status: 'Rejected' }, { new: true });
+      res.json(issue);
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+
   module.exports = router;
